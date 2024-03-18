@@ -18,6 +18,29 @@ int create_db_header(struct dbheader_t *header) {
     return STATUS_SUCCESS;
 }
 
+int read_employees(int fd, struct dbheader_t *header, struct employee_t *employees_out) {
+    if (fd < 0) {
+        printf("Got a bad file from user\n");
+        return STATUS_ERROR;
+    }
+
+    int i;
+    struct employee_t *employees;
+    if ((employees = calloc(header->count, sizeof(struct employee_t))) == NULL) {
+        perror("calloc");
+        return STATUS_ERROR;
+    }
+
+    read(fd, employees, header->count * sizeof(struct employee_t));
+
+    for (i = 0; i < header->count; i++) {
+        employees[i].hours = ntohl(employees[i].hours);
+    }
+
+    employees_out = employees;
+    return STATUS_SUCCESS;
+}
+
 int output_file(int fd, struct dbheader_t *header) {
     if (fd < 0) {
         printf("Got a bad file from user\n");

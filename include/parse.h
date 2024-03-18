@@ -18,7 +18,7 @@ struct employee_t {
 
 int create_db_header(struct dbheader_t *header);
 int validate_db_header(int fd, struct dbheader_t *header);
-int read_employees(int fd, struct dbheader_t *header, struct employee_t **employeesOut);
+int read_employees(int fd, struct dbheader_t *header, struct employee_t *employees_out);
 int output_file(int fd, struct dbheader_t *header);
 
 #endif //EMP_DB_PROJ_PARSE_H

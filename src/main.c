@@ -19,6 +19,7 @@ int main(int argc, char *argv[]) {
     char* filepath = NULL;
     bool newfile = false;
     struct dbheader_t header;
+    struct employee_t *employees;
 
     while ((c = getopt(argc, argv, "nf:")) != -1) {
         switch (c) {
@@ -70,6 +71,13 @@ int main(int argc, char *argv[]) {
             return STATUS_ERROR;
         }
     }
+
+    if (read_employees(dbfd, &header, employees) != STATUS_SUCCESS) {
+        printf("Failed to read employees\n");
+        return STATUS_ERROR;
+    }
+
+    output_file(dbfd, &header);
 
     return 0;
 }

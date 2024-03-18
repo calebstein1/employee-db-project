@@ -1,0 +1,7 @@
+#ifndef EMP_DB_PROJ_COMMON_H
+#define EMP_DB_PROJ_COMMON_H
+
+#define STATUS_ERROR -1
+#define STATUS_SUCCESS 0
+
+#endif //EMP_DB_PROJ_COMMON_H

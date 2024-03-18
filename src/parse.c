@@ -18,7 +18,7 @@ int create_db_header(struct dbheader_t *header) {
     return STATUS_SUCCESS;
 }
 
-int read_employees(int fd, struct dbheader_t *header, struct employee_t *employees_out) {
+int read_employees(int fd, struct dbheader_t *header, struct employee_t **employees_out) {
     if (fd < 0) {
         printf("Got a bad file from user\n");
         return STATUS_ERROR;
@@ -37,7 +37,13 @@ int read_employees(int fd, struct dbheader_t *header, struct employee_t *employe
         employees[i].hours = ntohl(employees[i].hours);
     }
 
-    employees_out = employees;
+    *employees_out = employees;
+    return STATUS_SUCCESS;
+}
+
+int add_employee(struct dbheader_t *header, struct employee_t *employees, char *addstring) {
+    printf("%s\n", addstring);
+
     return STATUS_SUCCESS;
 }
 

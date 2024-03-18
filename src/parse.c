@@ -9,7 +9,7 @@
 #include "common.h"
 #include "parse.h"
 
-int create_db_header(dbheader_t *header) {
+int create_db_header(struct dbheader_t *header) {
     header->magic = HEADER_MAGIC;
     header->version = 0x1;
     header->count = 0;
@@ -18,7 +18,7 @@ int create_db_header(dbheader_t *header) {
     return STATUS_SUCCESS;
 }
 
-int output_file(int fd, dbheader_t *header) {
+int output_file(int fd, struct dbheader_t *header) {
     if (fd < 0) {
         printf("Got a bad file from user\n");
         return STATUS_ERROR;
@@ -35,7 +35,7 @@ int output_file(int fd, dbheader_t *header) {
     return STATUS_SUCCESS;
 }
 
-int validate_db_header(int fd, dbheader_t *header) {
+int validate_db_header(int fd, struct dbheader_t *header) {
     struct stat dbstat = {0};
 
     if (fd < 0) {

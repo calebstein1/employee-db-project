@@ -18,7 +18,7 @@ int main(int argc, char *argv[]) {
     int c, dbfd = -1;
     char* filepath = NULL;
     bool newfile = false;
-    dbheader_t header;
+    struct dbheader_t header;
 
     while ((c = getopt(argc, argv, "nf:")) != -1) {
         switch (c) {

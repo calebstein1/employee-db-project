@@ -11,6 +11,10 @@ void print_usage(char *argv[]) {
     printf("Usage: %s -n -f <database file>\n", argv[0]);
     printf("\t -n  - create new database file\n");
     printf("\t -f  - (required) path to database file\n");
+    printf("\t -a {name,address,hours}  - add employee to the database file\n");
+    printf("\t -l - list the contents of the database file\n");
+    printf("\t -q {name} - query the database file for entried matching {name}\n");
+    printf("\t -r {id} - delete the employee with id {id} from the database\n");
     return;
 }
 

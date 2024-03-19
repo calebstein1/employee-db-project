@@ -4,15 +4,14 @@ OBJ = $(patsubst src/%.c, obj/%.o, $(SRC))
 CFLAGS=-Iinclude
 
 run: clean default
-	./$(TARGET) -nfmynewdb.db
-	./$(TARGET) -fmynewdb.db -a "Timmy H.,123 Sheshire Ln.,120"
+	[ -f ./mynewdb.db ] || ./$(TARGET) -nfmynewdb.db
 
 default: $(TARGET)
 
 clean:
 	rm -f obj/*.o
 	rm -f bin/*
-	rm -f *.db
+	# rm -f *.db
 
 $(TARGET): $(OBJ)
 	mkdir -p bin

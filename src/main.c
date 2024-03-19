@@ -76,10 +76,11 @@ int main(int argc, char *argv[]) {
     }
 
     if (addstring) {
+        employees = realloc(employees, ++header.count * sizeof(struct employee_t));
         add_employee(&header, employees, addstring);
     }
 
-    if (output_file(dbfd, &header) != 0) {
+    if (output_file(dbfd, &header, employees) != 0) {
         printf("Failed to write new database header\n");
         return STATUS_ERROR;
     }

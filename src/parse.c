@@ -42,12 +42,20 @@ int read_employees(int fd, struct dbheader_t *header, struct employee_t **employ
 }
 
 int add_employee(struct dbheader_t *header, struct employee_t *employees, char *addstring) {
-    printf("%s\n", addstring);
+    char *name = strtok(addstring, ",");
+    char *addr = strtok(NULL, ",");
+    char *hours = strtok(NULL, ",");
+
+    strncpy(employees[header->count - 1].name, name, sizeof(employees[header->count - 1].name));
+    strncpy(employees[header->count - 1].address, addr, sizeof(employees[header->count - 1].address));
+    employees[header->count - 1].hours = atoi(hours);
 
     return STATUS_SUCCESS;
 }
 
-int output_file(int fd, struct dbheader_t *header) {
+int output_file(int fd, struct dbheader_t *header, struct employee_t *employees) {
+    int i, real_count = header->count;
+
     if (fd < 0) {
         printf("Got a bad file from user\n");
         return STATUS_ERROR;
@@ -56,10 +64,15 @@ int output_file(int fd, struct dbheader_t *header) {
     header->magic = htonl(header->magic);
     header->version = htons(header->version);
     header->count = htons(header->count);
-    header->filesize = htonl(header->filesize);
+    header->filesize = htonl(sizeof(struct dbheader_t) + (sizeof(struct employee_t) * real_count));
 
     lseek(fd, 0, SEEK_SET);
     write(fd, header, sizeof(*header));
+
+    for (i = 0; i < real_count; i++) {
+        employees[i].hours = htonl(employees[i].hours);
+        write(fd, &employees[i], sizeof(struct employee_t));
+    }
 
     return STATUS_SUCCESS;
 }

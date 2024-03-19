@@ -22,5 +22,6 @@ int read_employees(int fd, struct dbheader_t *header, struct employee_t **employ
 int add_employee(struct dbheader_t *header, struct employee_t *employees, char *addstring);
 void print_employees(struct dbheader_t *header, struct employee_t *employees);
 int output_file(int fd, struct dbheader_t *header, struct employee_t *employees);
+int check_input(char *str);
 
 #endif //EMP_DB_PROJ_PARSE_H

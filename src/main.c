@@ -80,6 +80,10 @@ int main(int argc, char *argv[]) {
     }
 
     if (addstring) {
+        if (check_input(addstring) != 0) {
+            printf("Name or address exceeded allowed length\n");
+            return STATUS_ERROR;
+        }
         employees = realloc(employees, ++header.count * sizeof(struct employee_t));
         add_employee(&header, employees, addstring);
     }

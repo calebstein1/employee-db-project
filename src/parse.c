@@ -126,3 +126,19 @@ int validate_db_header(int fd, struct dbheader_t *header) {
     ret_err:
         return STATUS_ERROR;
 }
+
+int check_input(char *str) {
+    int i;
+    for (i = 0; str[i] != ','; i++) {
+        if (i > 256) {
+            return STATUS_ERROR;
+        }
+    }
+    for (i++; str[i] != ','; i++) {
+        if (i > 256) {
+            return STATUS_ERROR;
+        }
+    }
+
+    return STATUS_SUCCESS;
+}

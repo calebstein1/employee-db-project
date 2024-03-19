@@ -53,6 +53,14 @@ int add_employee(struct dbheader_t *header, struct employee_t *employees, char *
     return STATUS_SUCCESS;
 }
 
+void print_employees(struct dbheader_t *header, struct employee_t *employees) {
+    int i;
+    for (i = 0; i < header->count; i++) {
+        printf("Employee %d:\nName: %s\nAddress: %s\nHours worked: %d\n\n",
+               i + 1, employees[i].name, employees[i].address, employees[i].hours);
+    }
+}
+
 int output_file(int fd, struct dbheader_t *header, struct employee_t *employees) {
     int i, real_count = header->count;
 

@@ -7,7 +7,7 @@
 #include "file.h"
 #include "parse.h"
 
-void printUsage(char *argv[]) {
+void print_usage(char *argv[]) {
     printf("Usage: %s -n -f <database file>\n", argv[0]);
     printf("\t -n  - create new database file\n");
     printf("\t -f  - (required) path to database file\n");
@@ -16,11 +16,11 @@ void printUsage(char *argv[]) {
 
 int main(int argc, char *argv[]) {
     int c, dbfd = -1;
-    char *filepath, *addstring, *query_string, *delete_id;
+    char *file_path, *add_string, *query_string, *delete_id;
     bool new_file, list_employees;
     struct dbheader_t header;
     struct employee_t *employees;
-    filepath = addstring = query_string = delete_id = NULL;
+    file_path = add_string = query_string = delete_id = NULL;
     new_file = list_employees = false;
 
     while ((c = getopt(argc, argv, "nf:a:lq:r:")) != -1) {
@@ -29,10 +29,10 @@ int main(int argc, char *argv[]) {
                 new_file = true;
                 break;
             case 'f':
-                filepath = optarg;
+                file_path = optarg;
                 break;
             case 'a':
-                addstring = optarg;
+                add_string = optarg;
                 break;
             case 'l':
                 list_employees = true;
@@ -51,14 +51,14 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    if (filepath == NULL) {
+    if (file_path == NULL) {
         printf("Filepath is a required argument\n");
-        printUsage(argv);
+        print_usage(argv);
         return 0;
     }
 
     if (new_file) {
-        dbfd = create_db_file(filepath);
+        dbfd = create_db_file(file_path);
         if (dbfd == STATUS_ERROR) {
             printf("Unable to create database file\n");
             return -1;
@@ -69,7 +69,7 @@ int main(int argc, char *argv[]) {
             return STATUS_ERROR;
         }
     } else {
-        dbfd = open_db_file(filepath);
+        dbfd = open_db_file(file_path);
         if (dbfd == STATUS_ERROR) {
             printf("Unable to open database file\n");
             return -1;
@@ -86,13 +86,13 @@ int main(int argc, char *argv[]) {
         return STATUS_ERROR;
     }
 
-    if (addstring) {
-        if (check_input(addstring) != 0) {
+    if (add_string) {
+        if (check_input(add_string) != 0) {
             printf("Name or address exceeded allowed length\n");
             return STATUS_ERROR;
         }
         employees = realloc(employees, ++header.count * sizeof(struct employee_t));
-        add_employee(&header, employees, addstring);
+        add_employee(&header, employees, add_string);
     }
 
     if (list_employees) {

@@ -41,8 +41,8 @@ int read_employees(int fd, struct dbheader_t *header, struct employee_t **employ
     return STATUS_SUCCESS;
 }
 
-int add_employee(struct dbheader_t *header, struct employee_t *employees, char *addstring) {
-    char *name = strtok(addstring, ",");
+int add_employee(struct dbheader_t *header, struct employee_t *employees, char *add_string) {
+    char *name = strtok(add_string, ",");
     char *addr = strtok(NULL, ",");
     char *hours = strtok(NULL, ",");
 

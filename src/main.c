@@ -16,13 +16,14 @@ void printUsage(char *argv[]) {
 
 int main(int argc, char *argv[]) {
     int c, dbfd = -1;
-    char *filepath = NULL, *addstring = NULL;
+    char *filepath, *addstring, *query_string;
     bool new_file, list_employees;
     struct dbheader_t header;
     struct employee_t *employees;
+    filepath = addstring = query_string = NULL;
     new_file = list_employees = false;
 
-    while ((c = getopt(argc, argv, "nf:a:l")) != -1) {
+    while ((c = getopt(argc, argv, "nf:a:lq:")) != -1) {
         switch (c) {
             case 'n':
                 new_file = true;
@@ -35,6 +36,9 @@ int main(int argc, char *argv[]) {
                 break;
             case 'l':
                 list_employees = true;
+                break;
+            case 'q':
+                query_string = optarg;
                 break;
             case '?':
                 printf("Unknown option -%c\n", c);
@@ -90,6 +94,10 @@ int main(int argc, char *argv[]) {
 
     if (list_employees) {
         print_employees(&header, employees);
+    }
+
+    if (query_string) {
+        query_employees(&header, employees, query_string);
     }
 
     if (output_file(dbfd, &header, employees) != 0) {

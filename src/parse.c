@@ -62,6 +62,16 @@ void print_employees(struct dbheader_t *header, struct employee_t *employees) {
     }
 }
 
+void query_employees(struct dbheader_t *header, struct employee_t *employees, char *query_string) {
+    int i;
+    for (i = 0; i < header->count; i++) {
+        if (memcmp(employees[i].name, query_string, strlen(employees[i].name)) == 0) {
+            printf("Employee %d:\n\tName: %s\n\tAddress: %s\n\tHours worked: %d\n\n",
+                   employees[i].id, employees[i].name, employees[i].address, employees[i].hours);
+        }
+    }
+}
+
 int output_file(int fd, struct dbheader_t *header, struct employee_t *employees) {
     int i, real_count = header->count;
 

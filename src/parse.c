@@ -2,7 +2,6 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <arpa/inet.h>
-#include <sys/types.h>
 #include <sys/stat.h>
 #include <string.h>
 
@@ -35,6 +34,7 @@ int read_employees(int fd, struct dbheader_t *header, struct employee_t **employ
 
     for (i = 0; i < header->count; i++) {
         employees[i].hours = ntohl(employees[i].hours);
+        employees[i].id = ntohl(employees[i].id);
     }
 
     *employees_out = employees;
@@ -46,9 +46,10 @@ int add_employee(struct dbheader_t *header, struct employee_t *employees, char *
     char *addr = strtok(NULL, ",");
     char *hours = strtok(NULL, ",");
 
-    strncpy(employees[header->count - 1].name, name, sizeof(employees[header->count - 1].name));
-    strncpy(employees[header->count - 1].address, addr, sizeof(employees[header->count - 1].address));
+    strcpy(employees[header->count - 1].name, name);
+    strcpy(employees[header->count - 1].address, addr);
     employees[header->count - 1].hours = atoi(hours);
+    employees[header->count - 1].id = header->count;
 
     return STATUS_SUCCESS;
 }
@@ -56,8 +57,8 @@ int add_employee(struct dbheader_t *header, struct employee_t *employees, char *
 void print_employees(struct dbheader_t *header, struct employee_t *employees) {
     int i;
     for (i = 0; i < header->count; i++) {
-        printf("Employee %d:\nName: %s\nAddress: %s\nHours worked: %d\n\n",
-               i + 1, employees[i].name, employees[i].address, employees[i].hours);
+        printf("Employee %d:\n\tName: %s\n\tAddress: %s\n\tHours worked: %d\n\n",
+               employees[i].id, employees[i].name, employees[i].address, employees[i].hours);
     }
 }
 
@@ -79,6 +80,7 @@ int output_file(int fd, struct dbheader_t *header, struct employee_t *employees)
 
     for (i = 0; i < real_count; i++) {
         employees[i].hours = htonl(employees[i].hours);
+        employees[i].id = htonl(employees[i].id);
         write(fd, &employees[i], sizeof(struct employee_t));
     }
 

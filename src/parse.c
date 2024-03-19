@@ -153,16 +153,17 @@ int validate_db_header(int fd, struct dbheader_t *header) {
 }
 
 int check_input(char *str) {
-    int i;
+    int i, j = 0;
     for (i = 0; str[i] != ','; i++) {
-        if (i > 256) {
+        if (i > 255) {
             return STATUS_ERROR;
         }
     }
     for (i++; str[i] != ','; i++) {
-        if (i > 256) {
+        if (j > 255) {
             return STATUS_ERROR;
         }
+        j++;
     }
 
     return STATUS_SUCCESS;

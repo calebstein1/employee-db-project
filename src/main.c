@@ -16,14 +16,14 @@ void printUsage(char *argv[]) {
 
 int main(int argc, char *argv[]) {
     int c, dbfd = -1;
-    char *filepath, *addstring, *query_string;
+    char *filepath, *addstring, *query_string, *delete_id;
     bool new_file, list_employees;
     struct dbheader_t header;
     struct employee_t *employees;
-    filepath = addstring = query_string = NULL;
+    filepath = addstring = query_string = delete_id = NULL;
     new_file = list_employees = false;
 
-    while ((c = getopt(argc, argv, "nf:a:lq:")) != -1) {
+    while ((c = getopt(argc, argv, "nf:a:lq:r:")) != -1) {
         switch (c) {
             case 'n':
                 new_file = true;
@@ -39,6 +39,9 @@ int main(int argc, char *argv[]) {
                 break;
             case 'q':
                 query_string = optarg;
+                break;
+            case 'r':
+                delete_id = optarg;
                 break;
             case '?':
                 printf("Unknown option -%c\n", c);
@@ -98,6 +101,15 @@ int main(int argc, char *argv[]) {
 
     if (query_string) {
         query_employees(&header, employees, query_string);
+    }
+
+    if (delete_id) {
+        int delete_id_int;
+        if ((delete_id_int = atoi(delete_id)) == 0 || delete_id_int > header.count) {
+            printf("Must supply a single valid id to delete\n");
+            return STATUS_ERROR;
+        }
+        delete_employee(employees, delete_id_int);
     }
 
     if (output_file(dbfd, &header, employees) != 0) {

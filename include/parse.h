@@ -14,7 +14,7 @@ struct employee_t {
     char name[256];
     char address[256];
     unsigned int hours;
-    unsigned int id;
+    int id;
 };
 
 int create_db_header(struct dbheader_t *header);
@@ -23,6 +23,7 @@ int read_employees(int fd, struct dbheader_t *header, struct employee_t **employ
 int add_employee(struct dbheader_t *header, struct employee_t *employees, char *addstring);
 void print_employees(struct dbheader_t *header, struct employee_t *employees);
 void query_employees(struct dbheader_t *header, struct employee_t *employees, char *query_string);
+void delete_employee(struct employee_t *employees, int delete_id);
 int output_file(int fd, struct dbheader_t *header, struct employee_t *employees);
 int check_input(char *str);
 

@@ -72,8 +72,12 @@ void query_employees(struct dbheader_t *header, struct employee_t *employees, ch
     }
 }
 
+void delete_employee(struct employee_t *employees, int delete_id) {
+    employees[delete_id - 1].id = -1;
+}
+
 int output_file(int fd, struct dbheader_t *header, struct employee_t *employees) {
-    int i, real_count = header->count;
+    int i, real_count = header->count, next_id = 0;
 
     if (fd < 0) {
         printf("Got a bad file from user\n");
@@ -82,17 +86,26 @@ int output_file(int fd, struct dbheader_t *header, struct employee_t *employees)
 
     header->magic = htonl(header->magic);
     header->version = htons(header->version);
-    header->count = htons(header->count);
-    header->filesize = htonl(sizeof(struct dbheader_t) + (sizeof(struct employee_t) * real_count));
+    header->filesize = sizeof(struct employee_t) * real_count;
 
-    lseek(fd, 0, SEEK_SET);
-    write(fd, header, sizeof(*header));
+    lseek(fd, sizeof(*header), SEEK_SET);
 
     for (i = 0; i < real_count; i++) {
+        if (employees[i].id == -1) {
+            header->count--;
+            header->filesize -= sizeof(struct employee_t);
+            continue;
+        }
         employees[i].hours = htonl(employees[i].hours);
-        employees[i].id = htonl(employees[i].id);
+        employees[i].id = htonl(++next_id);
         write(fd, &employees[i], sizeof(struct employee_t));
     }
+
+    header->count = htons(header->count);
+    header->filesize = htonl(header->filesize + sizeof(*header));
+    lseek(fd, 0, SEEK_SET);
+    write(fd, header, sizeof(*header));
+    ftruncate(fd, ntohl(header->filesize));
 
     return STATUS_SUCCESS;
 }

@@ -72,8 +72,12 @@ void query_employees(struct dbheader_t *header, struct employee_t *employees, ch
     }
 }
 
-void delete_employee(struct employee_t *employees, int delete_id) {
-    employees[delete_id - 1].id = -1;
+void delete_employee(struct employee_t *employees, int employee_id) {
+    employees[employee_id - 1].id = -1;
+}
+
+void update_hours(struct employee_t *employees, int employee_id, int new_hours) {
+    employees[employee_id - 1].hours = new_hours;
 }
 
 int output_file(int fd, struct dbheader_t *header, struct employee_t *employees) {

@@ -16,19 +16,20 @@ void print_usage(char *argv[]) {
     printf("\t -q {name} - query the database file for entried matching {name}\n");
     printf("\t -s {id} - select an employee by id for updating or deletion\n");
     printf("\t -r - delete the employee selected with -s from the database\n");
+    printf("\t -u {hours} - update the hours of the employee selected with -s\n");
     return;
 }
 
 int main(int argc, char *argv[]) {
     int c, employee_id_int, dbfd = -1;
-    char *file_path, *add_string, *query_string, *employee_id;
+    char *file_path, *add_string, *query_string, *employee_id, *new_hours;
     bool new_file, list_employees, delete_emp;
     struct dbheader_t header;
     struct employee_t *employees;
-    file_path = add_string = query_string = employee_id = NULL;
+    file_path = add_string = query_string = employee_id = new_hours = NULL;
     new_file = list_employees = delete_emp = false;
 
-    while ((c = getopt(argc, argv, "nf:a:lq:s:r")) != -1) {
+    while ((c = getopt(argc, argv, "nf:a:lq:s:ru:")) != -1) {
         switch (c) {
             case 'n':
                 new_file = true;
@@ -50,6 +51,9 @@ int main(int argc, char *argv[]) {
                 break;
             case 'r':
                 delete_emp = true;
+                break;
+            case 'u':
+                new_hours = optarg;
                 break;
             case '?':
                 printf("Unknown option -%c\n", c);
@@ -124,6 +128,10 @@ int main(int argc, char *argv[]) {
             return STATUS_ERROR;
         }
         delete_employee(employees, employee_id_int);
+    }
+
+    if (new_hours) {
+        update_hours(employees, employee_id_int, atoi(new_hours));
     }
 
     if (output_file(dbfd, &header, employees) != 0) {

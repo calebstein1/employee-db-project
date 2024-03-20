@@ -23,7 +23,8 @@ int read_employees(int fd, struct dbheader_t *header, struct employee_t **employ
 int add_employee(struct dbheader_t *header, struct employee_t *employees, char *add_string);
 void print_employees(struct dbheader_t *header, struct employee_t *employees);
 void query_employees(struct dbheader_t *header, struct employee_t *employees, char *query_string);
-void delete_employee(struct employee_t *employees, int delete_id);
+void delete_employee(struct employee_t *employees, int employee_id);
+void update_hours(struct employee_t *employees, int employee_id, int new_hours);
 int output_file(int fd, struct dbheader_t *header, struct employee_t *employees);
 int check_input(char *str);
 

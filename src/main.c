@@ -14,20 +14,21 @@ void print_usage(char *argv[]) {
     printf("\t -a {name,address,hours}  - add employee to the database file\n");
     printf("\t -l - list the contents of the database file\n");
     printf("\t -q {name} - query the database file for entried matching {name}\n");
-    printf("\t -r {id} - delete the employee with id {id} from the database\n");
+    printf("\t -s {id} - select an employee by id for updating or deletion\n");
+    printf("\t -r - delete the employee selected with -s from the database\n");
     return;
 }
 
 int main(int argc, char *argv[]) {
-    int c, dbfd = -1;
-    char *file_path, *add_string, *query_string, *delete_id;
-    bool new_file, list_employees;
+    int c, employee_id_int, dbfd = -1;
+    char *file_path, *add_string, *query_string, *employee_id;
+    bool new_file, list_employees, delete_emp;
     struct dbheader_t header;
     struct employee_t *employees;
-    file_path = add_string = query_string = delete_id = NULL;
-    new_file = list_employees = false;
+    file_path = add_string = query_string = employee_id = NULL;
+    new_file = list_employees = delete_emp = false;
 
-    while ((c = getopt(argc, argv, "nf:a:lq:r:")) != -1) {
+    while ((c = getopt(argc, argv, "nf:a:lq:s:r")) != -1) {
         switch (c) {
             case 'n':
                 new_file = true;
@@ -44,8 +45,11 @@ int main(int argc, char *argv[]) {
             case 'q':
                 query_string = optarg;
                 break;
+            case 's':
+                employee_id = optarg;
+                break;
             case 'r':
-                delete_id = optarg;
+                delete_emp = true;
                 break;
             case '?':
                 printf("Unknown option -%c\n", c);
@@ -107,13 +111,19 @@ int main(int argc, char *argv[]) {
         query_employees(&header, employees, query_string);
     }
 
-    if (delete_id) {
-        int delete_id_int;
-        if ((delete_id_int = atoi(delete_id)) == 0 || delete_id_int > header.count) {
-            printf("Must supply a single valid id to delete\n");
+    if (employee_id) {
+        if ((employee_id_int = atoi(employee_id)) == 0 || employee_id_int > header.count) {
+            printf("Must supply a single valid id\n");
             return STATUS_ERROR;
         }
-        delete_employee(employees, delete_id_int);
+    }
+
+    if (delete_emp) {
+        if (!employee_id_int) {
+            printf("Must supply a single valid id with -s\n");
+            return STATUS_ERROR;
+        }
+        delete_employee(employees, employee_id_int);
     }
 
     if (output_file(dbfd, &header, employees) != 0) {
